@@ -1,0 +1,9 @@
+{
+  "name": "Gemini Developer Hub",
+  "description": "A comprehensive showcase and playground for the latest Google Gemini API features, including text generation, multimodal chat, image/video generation, and real-time voice interactions.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": []
+}
