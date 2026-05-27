@@ -78,6 +78,33 @@ export const searchGroundingRequest = async (query: string) => {
   return { text, sources };
 };
 
+export const generateConversationSummary = async (history: Message[]) => {
+  const ai = getAIClient();
+  
+  // Format history safely for key value summaries
+  const textHistory = history
+    .map((msg) => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
+    .join('\n\n');
+
+  const response = await ai.models.generateContent({
+    model: MODELS.SEARCH, // Use search/flash model for fast speed summary
+    contents: `You are an expert technical assistant. Please generate a highly concise, elegant outline and summary of the following chat session. Provide:
+1. A 2-sentence overarching theme/summary.
+2. Bullet points outlining the primary technical or logical topics explored.
+3. Key resolutions, solutions or guidance highlights.
+
+Make the output professional, aesthetic, and formatted with clean Markdown headers and bullet points.
+
+Conversation History to Summarize:
+${textHistory}`,
+    config: {
+      temperature: 0.5,
+    }
+  });
+
+  return response.text;
+};
+
 // Audio helpers
 export function decode(base64: string) {
   const binaryString = atob(base64);
