@@ -75,7 +75,7 @@ Developapp/
 - **State**: local React state with hooks. No Redux, no Context (apart from React's built-ins). The chat persists its system instruction to `localStorage` under `gemini_system_instruction`.
 - **Styling**: Tailwind utility classes (CDN) and Font Awesome icons. Dark glassmorphic theme (slate-950 backgrounds, blur/transparency).
 - **Component naming**: PascalCase for components (`ChatSection.tsx`), camelCase for services.
-- **Long-running jobs** (video): poll the operation handle from `genai.operations.getVideoOperation(...)` at 5-second intervals; surface progress in the UI.
+- **Long-running jobs** (video): poll the operation handle with `ai.operations.getVideosOperation({ operation })` at 5-second intervals (see `components/VideoSection.tsx`); surface progress in the UI.
 - **Live audio**: use the existing `encode`/`decode`/`decodeAudioData` helpers — don't reinvent the WebAudio wiring.
 
 ## Where to add features
