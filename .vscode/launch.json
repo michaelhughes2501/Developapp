@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Dev Server (Vite + Express)",
+      "name": "Dev Server (Vite)",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
