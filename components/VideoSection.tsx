@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI } from "@google/genai";
-import { MODELS } from '../constants';
+import { startVideoGeneration, pollVideoOperation, fetchGeneratedVideoBlob } from '../services/geminiService';
 
 const VideoSection: React.FC = () => {
   const [hasKey, setHasKey] = useState(false);
@@ -34,28 +33,18 @@ const VideoSection: React.FC = () => {
     setVideoUrl(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      let operation = await ai.models.generateVideos({
-        model: MODELS.VIDEO,
-        prompt: prompt,
-        config: {
-          numberOfVideos: 1,
-          resolution: '720p',
-          aspectRatio: '16:9'
-        }
-      });
+      let operation = await startVideoGeneration(prompt);
 
       setStatus('Thinking and rendering...');
       while (!operation.done) {
         await new Promise(resolve => setTimeout(resolve, 5000));
-        operation = await ai.operations.getVideosOperation({ operation: operation });
+        operation = await pollVideoOperation(operation);
         setStatus('Processing video frames...');
       }
 
       const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
       if (downloadLink) {
-        const response = await fetch(`${downloadLink}&key=${process.env.API_KEY}`);
-        const blob = await response.blob();
+        const blob = await fetchGeneratedVideoBlob(downloadLink);
         setVideoUrl(URL.createObjectURL(blob));
       }
     } catch (err: any) {

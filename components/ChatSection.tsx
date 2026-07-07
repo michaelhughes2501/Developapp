@@ -59,8 +59,9 @@ const PreCodeBlock: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   React.Children.forEach(children, (child) => {
     if (React.isValidElement(child)) {
       if (child.type === 'code') {
-        textToCopy = String(child.props.children || '').trim();
-        const className = child.props.className || '';
+        const codeProps = child.props as { children?: React.ReactNode; className?: string };
+        textToCopy = String(codeProps.children || '').trim();
+        const className = codeProps.className || '';
         const match = /language-(\w+)/.exec(className);
         if (match) {
           language = match[1];
@@ -75,7 +76,7 @@ const PreCodeBlock: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       if (typeof node === 'number') return String(node);
       if (Array.isArray(node)) return node.map(extractText).join('');
       if (React.isValidElement(node)) {
-        return extractText(node.props.children);
+        return extractText((node.props as { children?: React.ReactNode }).children);
       }
       return '';
     };

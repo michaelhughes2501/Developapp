@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, GenerateContentResponse, Modality } from "@google/genai";
+import { GoogleGenAI, GenerateContentResponse, Modality, GenerateVideosOperation } from "@google/genai";
 import { MODELS } from "../constants";
 import { Message } from "../types";
 
@@ -103,6 +103,30 @@ ${textHistory}`,
   });
 
   return response.text;
+};
+
+export const startVideoGeneration = async (prompt: string): Promise<GenerateVideosOperation> => {
+  const ai = getAIClient();
+  return ai.models.generateVideos({
+    model: MODELS.VIDEO,
+    prompt,
+    config: {
+      numberOfVideos: 1,
+      resolution: '720p',
+      aspectRatio: '16:9'
+    }
+  });
+};
+
+export const pollVideoOperation = async (operation: GenerateVideosOperation): Promise<GenerateVideosOperation> => {
+  const ai = getAIClient();
+  return ai.operations.getVideosOperation({ operation });
+};
+
+export const fetchGeneratedVideoBlob = async (downloadLink: string): Promise<Blob> => {
+  const apiKey = process.env.API_KEY;
+  const response = await fetch(`${downloadLink}&key=${apiKey}`);
+  return response.blob();
 };
 
 // Audio helpers
