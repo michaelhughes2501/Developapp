@@ -126,6 +126,9 @@ export const pollVideoOperation = async (operation: GenerateVideosOperation): Pr
 export const fetchGeneratedVideoBlob = async (downloadLink: string): Promise<Blob> => {
   const apiKey = process.env.API_KEY;
   const response = await fetch(`${downloadLink}&key=${apiKey}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch video blob: ${response.status} ${response.statusText}`);
+  }
   return response.blob();
 };
 

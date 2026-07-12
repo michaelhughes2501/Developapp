@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DemoMode } from './types';
 import { MODES, MODE_MODEL_MAP } from './constants';
 import ChatSection from './components/ChatSection';
@@ -8,11 +8,16 @@ import VideoSection from './components/VideoSection';
 import LiveSection from './components/LiveSection';
 import SearchSection from './components/SearchSection';
 
-const hasApiKey = Boolean(process.env.API_KEY);
-
 const App: React.FC = () => {
   const [activeMode, setActiveMode] = useState<DemoMode>(DemoMode.CHAT);
+  const [hasApiKey, setHasApiKey] = useState(() => Boolean(process.env.API_KEY));
   const activeModeMeta = MODES.find((mode) => mode.id === activeMode);
+
+  useEffect(() => {
+    if (typeof window.aistudio?.hasSelectedApiKey === 'function') {
+      window.aistudio.hasSelectedApiKey().then(setHasApiKey);
+    }
+  }, []);
 
   const renderContent = () => {
     switch (activeMode) {
